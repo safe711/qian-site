@@ -1,6 +1,6 @@
 export const HOUSE_RULES=[
  {title:'家族宗旨',rules:[
- ['家族荣誉',['湖南钱家重视家族传承、内部秩序与成员团结。钱家奴才应以获得家族认可为荣，以维护家族声誉为己任。']],
+ ['家族荣誉',['澳门钱家重视家族传承、内部秩序与成员团结。钱家奴才应以获得家族认可为荣，以维护家族声誉为己任。']],
  ['入家为荣',['加入钱家是一份需要认真对待的身份承诺。凡自愿成为钱家奴才者，无论身份、背景、侍奉方式及职责差异，均应珍惜获得的家族身份，以忠诚和行动证明自身价值。']],
  ['家族利益',['奴才应将维护钱家声誉、尊重钱家成员及履行约定职责作为重要原则。应认真履行所领职责，留意主家所需，主动报告进展，不得因任性、怠慢或失信损害家族声誉。']]
  ]},
@@ -24,7 +24,7 @@ export const HOUSE_RULES=[
  ]}
 ];
 export const FAMILY_OATH=[
- '我自愿加入湖南钱家，以获得钱家的认可与接纳为荣。',
+ '我自愿加入澳门钱家，以获得钱家的认可与接纳为荣。',
  '自入家之日起，我愿放下傲慢与虚荣，谨记自身身份，恭敬主家，遵行钱家礼仪。',
  '我愿以忠诚为信念，以侍奉为荣誉，以守信为准则。',
  '我将珍惜钱家赋予我的入府身份，认真履行所领职责，以实际行动维护钱家的声誉、团结与利益。',
@@ -32,5 +32,5 @@ export const FAMILY_OATH=[
 ];
 export function houseRulesHtml(){
  let number=0;const chapters=['一','二','三','四','五'],ordinals=['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五'];
- return `<div class="house-rules"><section class="rules-cover"><span class="rules-edition">THE QIAN IMPERIUM｜钱氏传承</span><h2>湖南钱家家规</h2><p>家族至上 · 忠诚为本 · 侍奉为荣</p><div class="rules-cover-line"></div><small>五章 · 十五条 · 入家誓言</small></section>${HOUSE_RULES.map((chapter,index)=>`<section class="rules-chapter" aria-labelledby="rules-chapter-${index}"><header class="rules-chapter-heading"><span>${chapters[index]}</span><h3 id="rules-chapter-${index}">${chapter.title}</h3></header><ol start="${number+1}" class="rules-list">${chapter.rules.map(([title,body])=>`<li><span class="rule-number">${String(number+1).padStart(2,'0')}</span><div><h4>第${ordinals[number++]}条｜${title}</h4>${body.map(text=>'<p>'+text+'</p>').join('')}</div></li>`).join('')}</ol></section>`).join('')}<section class="rules-chapter rules-oath" aria-labelledby="rules-chapter-4"><header class="rules-chapter-heading"><span>五</span><h3 id="rules-chapter-4">入家誓言</h3></header><p class="rules-oath-intro">凡自愿加入钱家的奴才，可以通过以下誓言表达对家族的认同：</p><h4>钱家奴才忠诚誓言</h4><blockquote>${FAMILY_OATH.map(text=>'<p>'+text+'</p>').join('')}<p><strong>入钱家之门，守钱家之规。</strong></p><p><strong>以侍奉为荣，以忠诚为本。</strong></p></blockquote></section><div class="rules-signoff"><strong>THE QIAN IMPERIUM</strong><span>钱氏 · 家规</span><em>传承不息 · 荣耀永续</em></div></div>`;
+ return `<div class="house-rules"><section class="rules-cover"><span class="rules-edition">THE QIAN IMPERIUM｜钱氏传承</span><h2>澳门钱家家规</h2><p>家族至上 · 忠诚为本 · 侍奉为荣</p><div class="rules-cover-line"></div><small>五章 · 十五条 · 入家誓言</small></section>${HOUSE_RULES.map((chapter,index)=>`<section class="rules-chapter" aria-labelledby="rules-chapter-${index}"><header class="rules-chapter-heading"><span>${chapters[index]}</span><h3 id="rules-chapter-${index}">${chapter.title}</h3></header><ol start="${number+1}" class="rules-list">${chapter.rules.map(([title,body])=>`<li><span class="rule-number">${String(number+1).padStart(2,'0')}</span><div><h4>第${ordinals[number++]}条｜${title}</h4>${body.map(text=>'<p>'+text+'</p>').join('')}</div></li>`).join('')}</ol></section>`).join('')}<section class="rules-chapter rules-oath" aria-labelledby="rules-chapter-4"><header class="rules-chapter-heading"><span>五</span><h3 id="rules-chapter-4">入家誓言</h3></header><p class="rules-oath-intro">凡自愿加入钱家的奴才，可以通过以下誓言表达对家族的认同：</p><h4>钱家奴才忠诚誓言</h4><blockquote>${FAMILY_OATH.map(text=>'<p>'+text+'</p>').join('')}<p><strong>入钱家之门，守钱家之规。</strong></p><p><strong>以侍奉为荣，以忠诚为本。</strong></p></blockquote></section><div class="rules-signoff"><strong>THE QIAN IMPERIUM</strong><span>钱氏 · 家规</span><em>传承不息 · 荣耀永续</em></div></div>`;
 }

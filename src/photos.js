@@ -12,7 +12,7 @@ export function photoPath(photo){
 }
 function openDatabase() {
   if(!database)database=new Promise((resolve,reject)=>{
-    const request=indexedDB.open(mediaAccount?'daily-photos:'+mediaAccount:'daily-photos',4);
+    const request=indexedDB.open(mediaAccount?'qian-photos-v2:'+mediaAccount:'qian-photos-v2',4);
     request.onupgradeneeded=()=>{
       if(!request.result.objectStoreNames.contains('photos'))request.result.createObjectStore('photos',{keyPath:'id'});
       if(!request.result.objectStoreNames.contains('reports'))request.result.createObjectStore('reports',{keyPath:'date'});
