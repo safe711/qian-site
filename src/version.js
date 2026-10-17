@@ -1,0 +1,5 @@
+export const APP_VERSION='1.0.0';
+export const CLIENT_BUILD=`qian-shell-v${APP_VERSION}`;
+export const RELEASES=[{version:'1.0.0',date:'2026-10-18',changes:['THE QIAN IMPERIUM 首次发布，主人为钱若娟，沿用现有人物素材与玩法。','独立账号、媒体与空白存档，不导入原站数据。']}];
+
+export function releaseLogHtml(){return `<dialog id="release-log" class="contract-viewer" aria-labelledby="release-log-title"><div class="contract-viewer-header"><h3 id="release-log-title">更新日志</h3><button type="button" data-action="close-release-log">关闭</button></div><p>当前版本：${escape(APP_VERSION)}</p>${RELEASES.map(release=>`<article><h3>${escape(release.version)}</h3><small>${escape(release.date)}</small><ul>${release.changes.map(change=>`<li>${escape(change)}</li>`).join('')}</ul></article>`).join('')}</dialog>`;}

@@ -1,0 +1,63 @@
+import {IMPORTED_ORIGINAL_ASSETS} from './estate-imported-originals.js';
+import {anchorBowKnees} from './estate-bow-anchors.js';
+import {EXPANSION_ORIGINAL_ASSETS} from './estate-expansion-originals.js';
+import {drawWornOriginalCollar} from './estate-goods.js';
+import {ORIGINAL_CHARACTER_ASSETS as BASE_ASSETS} from './estate-character-originals.js';
+import {RIDING_ORIGINAL_ASSETS} from './estate-riding-originals.js';
+import {loadOriginalImage} from './estate-original-image-cache.js';
+import {ESTATE_CATALOG} from './model.js';
+import {isDisasterActor} from './estate-world.js';
+const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS},BASE_ASSETS);
+const images={},frameClips=new WeakMap();
+const owner=a=>a.role==='owner'||a.id==='QIAN_OWNER_001';
+const moving=clip=>['walk','run','stop'].includes(clip);
+const loadedJobs=new Map();function loadAsset(id){if(loadedJobs.has(id))return loadedJobs.get(id);const asset=ASSETS[id],job=loadOriginalImage(new URL('../'+asset.file.replace(/^\.\//,''),import.meta.url).href+'?original='+asset.hash).then(im=>{images[id]=im;globalThis.dispatchEvent?.(new Event('estate-character-ready'));return im;});loadedJobs.set(id,job);job.catch(()=>loadedJobs.delete(id));return job;}
+// Original sheets are requested only by visible actors, previews or outfit thumbnails.
+export const characterReady=Promise.resolve();
+export function prepareCharacter(a,clip='idle',k=0){const selected=characterSelection(a,clip,k);return loadAsset(selected.id);}
+// Select an authored original sequence. Never repaint, recolour or splice its character.
+export function characterSelection(a,clip,k=0){
+ const look=ESTATE_CATALOG.find(i=>i.id===a.avatar?.outfit&&i.wholeAppearance),g=look?.gender||a.gender||(owner(a)?'female':'male'),male=g==='male';
+ // Ordinary servants always use barefoot originals in every scene; movement is crawling.
+ if(!owner(a)&&!isDisasterActor(a)&&(['idle','kneel','crawl','guard','bow','disaster-bow','carry'].includes(clip)||moving(clip))){
+  if(clip==='bark')return{id:g+'-friendly-bark',index:k%2};
+  if(clip==='carry'){const frame=k%4;return{id:g==='female'?'female-carry-shoeless':frame===0?'male-carry-first-shoeless':'male-carry-master-shoeless',index:frame};}
+  const index=clip==='crawl'||moving(clip)?12+k%6:clip==='guard'?18+k%4:clip==='bark'?23:['bow','disaster-bow'].includes(clip)?6+k%5:clip==='sniff'||clip==='massage'?9:6;
+  return{id:g+'-shoeless',index};
+ }
+ if(isDisasterActor(a))return{id:'elder-'+g+'-actions-v1',index:clip==='crawl'?6+k%4:['bow','disaster-bow'].includes(clip)?[0,1,2,3,4][k%5]:0};if(clip==='basin')return{id:'female-basin-hold-v1',index:k%4};
+ const prison=!owner(a)||look?.id?.startsWith('appearance-prison-');if(clip==='recline'&&look?.id?.startsWith('model-outfit-')&&look.id!=='model-outfit-01')return{id:look.id+'-recline',index:k%2};if(clip==='recline'){const id=look?.id==='model-outfit-01'?'owner-lounge-recline':male?'male-lounge-recline':look?.id==='appearance-female-orange'?'female-orange-lounge-recline':'female-black-lounge-recline';return{id,index:k%4};}if(clip==='massage'&&male)return{id:'male-kneeling-offer',index:[0,3,0,3][k%4]};if(clip==='massage')return{id:a.scene==='lounge'?g+'-shoeless':g+'-prison',index:[6,11,6,11][k%4]};if(a.scene==='lounge'){if(prison){if(clip==='carry'){const frame=k%4;return{id:g==='female'?'female-carry-shoeless':frame===0?'male-carry-first-shoeless':'male-carry-master-shoeless',index:frame};}if(clip==='bark')return{id:g+'-shoeless',index:23};return{id:g+'-shoeless',index:['bow','kneel','sniff'].includes(clip)?6+(clip==='kneel'?0:clip==='sniff'?3:k%5):clip==='crawl'?12+k%6:clip==='guard'?18+k%4:moving(clip)?12+k%6:6};}if(look?.id==='model-outfit-01'){if(clip==='ride')return{id:'owner-riding-shoeless',index:k%4};if(moving(clip))return{id:'owner-shoeless-walk',index:k%8};return{id:'owner-normal-shoeless',index:['sit'].includes(clip)?4+k%2:clip==='lie'?6+k%2:clip==='win'?14+k%2:12+k%2};}}
+ if(prison){if(clip==='carry'){const frame=k%4;if(g==='female'&&ASSETS['female-carry'])return{id:'female-carry',index:frame};if(g==='male')return{id:frame===0?'male-carry-first':'male-carry-master',index:frame===0?0:frame};return{id:g+'-prison',index:12+frame};}if(clip==='bark')return{id:g+'-friendly-bark',index:k%2};const id=g+'-prison';return{id,index:['bow','kneel','sniff'].includes(clip)?6+(clip==='kneel'?0:clip==='sniff'?3:k%5):clip==='crawl'?12+k%6:clip==='guard'?18+k%4:moving(clip)?12+k%6:6};}
+ const normalClip=['sit','ride','lie','win'].includes(clip)?clip:'idle';
+ if(look?.id==='model-outfit-01'){if(clip==='ride')return{id:'owner-riding',index:k%4};if(moving(clip))return{id:'owner-outfit-walk',index:k%8};if(normalClip==='lie')return{id:'owner-supine',index:2+k%2};return{id:'owner-normal',index:['sit','ride'].includes(normalClip)?4+k%2:normalClip==='win'?14+k%2:12+k%2};}
+ if(look?.asset&&ASSETS[look.asset])return{id:look.asset,index:moving(clip)?k%8:['sit','ride'].includes(normalClip)?8+k%2:normalClip==='lie'?10+k%2:normalClip==='win'?14+k%2:12+k%2};
+ if(male){if(moving(clip))return{id:'male-base-walk',index:k%8};return{id:'male-normal',index:['sit','ride'].includes(normalClip)?k%2:normalClip==='lie'?2+k%2:normalClip==='win'?6+k%2:4+k%2};}
+ if(look?.id==='appearance-female-orange'){if(moving(clip))return{id:'female-orange-walk',index:k%8};if(normalClip==='lie')return{id:'owner-supine',index:k%2};return{id:'owner-normal',index:['sit','ride'].includes(normalClip)?k%2:normalClip==='win'?10+k%2:8+k%2};}
+ if(moving(clip))return{id:'female-black-walk',index:k%8};
+ return{id:'female-black-normal',index:['sit','ride'].includes(normalClip)?2+k%2:normalClip==='lie'?4+k%2:normalClip==='win'?6+k%2:k%2};
+}
+export function characterFrame(a,clip='idle',k=0){
+ const selected=characterSelection(a,clip,k),asset=ASSETS[selected.id],image=images[selected.id];
+ if(!asset)return null;if(!image){loadAsset(selected.id).catch(()=>{});return null;}
+ const index=((selected.index%asset.frames.length)+asset.frames.length)%asset.frames.length;
+ return{image,asset:selected.id,index,frame:asset.frames[index]};
+}
+export function drawCharacterFrame(c,a,clip='idle',k=0,{x=a.x,y=a.y,scale=1,flip=a.direction===-1?-1:1,rotation=0}={}){
+ const selected=characterFrame(a,clip,k);if(!selected)return false;
+ const {image,frame}=selected,[sx,sy,w,h]=frame.sourceBounds,[dx,dy]=frame.offset,s=1.35*scale;
+ c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.translate(x,y);c.rotate(rotation);c.scale(flip*s,s);
+ // Some atlas figures overlap their neighbour's rectangular cell. Clip only the selected original figure.
+ if(frame.sourceClip){let path=frameClips.get(frame);if(!path){path=new Path2D();for(const [px,py,pw,ph]of frame.sourceClip)path.rect(px*frame.scale+dx-33,py*frame.scale+dy-56,pw*frame.scale,ph*frame.scale);frameClips.set(frame,path);}c.clip(path);}
+ // Sample the original PNG directly into the final scene. No small atlas or intermediate bitmap.
+ c.drawImage(image,sx,sy,w,h,sx*frame.scale+dx-33,sy*frame.scale+dy-56,w*frame.scale,h*frame.scale);
+ if(!owner(a)){const item=ESTATE_CATALOG.find(i=>i.id===(a.avatar?.collar||'black-collar')&&i.kind==='collar'),p=frame.neck;if(item&&p&&!((clip==='carry'||selected.asset==='male-kneeling-offer'||selected.asset.startsWith('elder-')||clip==='basin')&&item.id==='black-collar')){c.save();c.translate(p.x-33,p.y-56);c.rotate(frame.neckAngle||0);drawWornOriginalCollar(c,item,0,0);c.restore();}}
+ c.restore();return true;
+}
+export function characterAnchor(a,clip,k,point='neck'){
+ const selected=characterSelection(a,clip,k),asset=ASSETS[selected.id],frame=asset.frames[selected.index%asset.frames.length];
+ return frame?.[point]||{x:33,y:29};
+}
+// Compatibility metadata, never a program-painted body.
+export const rasterDollFrame=characterFrame;
+
+const appearanceThumbnails=new Map();export function appearanceThumbnail(item){if(!item?.wholeAppearance)return null;if(appearanceThumbnails.has(item.id))return appearanceThumbnails.get(item.id);const f=characterFrame({role:item.role==='slave'?'slave':'owner',gender:item.gender,avatar:{outfit:item.id}},'idle',0);if(!f)return null;const cv=document.createElement('canvas');cv.width=cv.height=160;const c=cv.getContext('2d'),[x,y,w,h]=f.frame.sourceBounds,scale=144/Math.max(w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(f.image,x,y,w,h,(160-w*scale)/2,(160-h*scale)/2,w*scale,h*scale);const result=cv.toDataURL();appearanceThumbnails.set(item.id,result);return result;}

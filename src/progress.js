@@ -1,0 +1,22 @@
+export function createProgressTracker({id,title}={}){
+ let node=null,timer=null,active=false;
+ function mount(){if(!globalThis.document)return null;if(node?.isConnected)return node;node=document.createElement('aside');node.className='operation-progress';node.dataset.operation=id;node.setAttribute('role','status');node.setAttribute('aria-live','polite');const heading=document.createElement('strong'),percent=document.createElement('span'),bar=document.createElement('progress'),caption=document.createElement('small'),action=document.createElement('button');heading.textContent=title||'正在加载';percent.className='operation-progress-percent';percent.hidden=true;bar.max=100;bar.setAttribute('aria-label',title||'加载进度');action.type='button';action.hidden=true;node.append(heading,percent,bar,caption,action);document.body.append(node);return node;}
+ function paint(text,value){const el=mount();if(!el)return;el.querySelector('small').textContent=text;const percent=el.querySelector('.operation-progress-percent');percent.hidden=!Number.isFinite(value);percent.textContent=Number.isFinite(value)?Math.round(Math.max(0,Math.min(100,value)))+'%':'';const bar=el.querySelector('progress');if(Number.isFinite(value))bar.value=Math.max(0,Math.min(100,value));else bar.removeAttribute('value');}
+ return {get active(){return active;},start(text='正在加载…'){clearTimeout(timer);active=true;paint(text);if(node){node.classList.remove('is-error');node.querySelector('button').hidden=true;}},update(value,text){active=true;paint(text,value);},finish(text='加载完成',{hideAfter=2500,onAction,actionLabel='重试'}={}){clearTimeout(timer);active=false;paint(text,100);if(node){const b=node.querySelector('button');b.hidden=!onAction;b.textContent=actionLabel;b.onclick=onAction||null;}if(hideAfter)timer=setTimeout(()=>{node?.remove();node=null;},hideAfter);},error(text,onRetry){clearTimeout(timer);active=false;paint(text);if(node){node.classList.add('is-error');const b=node.querySelector('button');b.hidden=!onRetry;b.textContent=onRetry?'重试':'关闭';b.onclick=onRetry||(()=>{node?.remove();node=null;});if(!onRetry)b.hidden=false;}},cancel(){clearTimeout(timer);active=false;node?.remove();node=null;}};
+}
+
+export async function readResponseBlob(response,{onBytes=()=>{},check=()=>{},type}={}){
+ if(!response.body?.getReader){const blob=await response.blob();check();onBytes(blob.size);return blob;}
+ const reader=response.body.getReader(),chunks=[];let bytes=0;
+ try{while(true){check();const {done,value}=await reader.read();if(done)break;check();chunks.push(value);bytes+=value.byteLength;onBytes(bytes);}check();return new Blob(chunks,{type:type||response.headers.get('content-type')?.split(';')[0]||'application/octet-stream'});}catch(e){await reader.cancel(e).catch(()=>{});throw e;}finally{reader.releaseLock();}
+}
+
+// Application updates use the existing notification line; downloads keep their own card.
+export function createUpdateProgress(){
+ if(!globalThis.document)return createProgressTracker({id:'app-update',title:'应用更新'});
+ const node=document.querySelector('#message');if(!node)return createProgressTracker({id:'app-update',title:'应用更新'});
+ let active=false,timer=null;
+ function clear(){clearTimeout(timer);active=false;delete node.dataset.updateActive;node.classList.remove('message-update','is-update-complete');node.replaceChildren();}
+ function paint(text,value){clearTimeout(timer);node.dataset.updateActive='true';node.classList.add('message-update');node.replaceChildren();const row=document.createElement('span'),caption=document.createElement('span'),percent=document.createElement('span'),bar=document.createElement('progress');row.className='update-message-row';caption.className='update-message-caption';caption.textContent=text;percent.className='update-message-percent';percent.textContent=Number.isFinite(value)?Math.round(value)+'%':'';bar.max=100;bar.setAttribute('aria-label','应用更新进度');if(Number.isFinite(value))bar.value=value;row.append(caption,percent);node.append(row,bar);}
+ return {get active(){return active;},start(){active=true;node.classList.remove('is-update-complete');paint('正在更新…',0);},update(value,text='正在更新…'){active=true;paint(text,Number.isFinite(value)?Math.min(99,Math.max(0,value)):undefined);},finish(text='更新完成',{hideAfter=0}={}){active=false;paint(text,100);node.classList.add('is-update-complete');if(hideAfter)timer=setTimeout(clear,hideAfter);},error(text){clear();node.textContent=text;timer=setTimeout(clear,3000);},cancel:clear};
+}
