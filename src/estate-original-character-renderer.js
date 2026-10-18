@@ -7,9 +7,11 @@ import {RIDING_ORIGINAL_ASSETS} from './estate-riding-originals.js';
 import {loadOriginalImage} from './estate-original-image-cache.js';
 import {ESTATE_CATALOG} from './model.js';
 import {isDisasterActor} from './estate-world.js';
+import {QIAN_OUTFIT_ORIGINAL_ASSETS} from './estate-qian-outfit-originals.js';
 import {QIAN_OWNER_ORIGINAL_ASSETS} from './estate-qian-owner-originals.js';
 export function usesQianOwnerDefault(a){return owner(a)&&a.gender!=='male'&&(!a.avatar?.outfit||['appearance-female-black','appearance-female-orange'].includes(a.avatar.outfit));}
-const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS,...QIAN_OWNER_ORIGINAL_ASSETS},BASE_ASSETS);
+export function usesQianOwnerSprites(a){return usesQianOwnerDefault(a)||(owner(a)&&a.gender!=='male'&&['qian-outfit-gold','qian-outfit-black'].includes(a.avatar?.outfit));}
+const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS,...QIAN_OWNER_ORIGINAL_ASSETS,...QIAN_OUTFIT_ORIGINAL_ASSETS},BASE_ASSETS);
 const images={},frameClips=new WeakMap();
 const owner=a=>a.role==='owner'||a.id==='QIAN_OWNER_001';
 const moving=clip=>['walk','run','stop'].includes(clip);
@@ -20,7 +22,7 @@ export function prepareCharacter(a,clip='idle',k=0){const selected=characterSele
 // Select an authored original sequence. Never repaint, recolour or splice its character.
 export function characterSelection(a,clip,k=0){
  if(owner(a)&&clip==='audience')return{id:'qian-owner-audience',index:k%9};
- if(usesQianOwnerDefault(a)){const action=moving(clip)?'walk':clip==='win'?'idle':clip,id='qian-owner-'+action;if(ASSETS[id])return{id,index:k%ASSETS[id].frames.length};}
+ if(usesQianOwnerSprites(a)){const action=moving(clip)?'walk':clip==='win'?'idle':clip,id=(usesQianOwnerDefault(a)?'qian-owner':a.avatar.outfit)+'-'+action;if(ASSETS[id])return{id,index:k%ASSETS[id].frames.length};}
  const look=ESTATE_CATALOG.find(i=>i.id===a.avatar?.outfit&&i.wholeAppearance),g=look?.gender||a.gender||(owner(a)?'female':'male'),male=g==='male';
  // Ordinary servants always use barefoot originals in every scene; movement is crawling.
  if(!owner(a)&&!isDisasterActor(a)&&(['idle','kneel','crawl','guard','bow','disaster-bow','carry'].includes(clip)||moving(clip))){

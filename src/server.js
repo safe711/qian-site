@@ -1,4 +1,4 @@
-export const PUBLIC_SERVER="https://hdtv-matter-daisy-crops.trycloudflare.com";
+export const PUBLIC_SERVER="https://optimization-ebook-boom-publicly.trycloudflare.com";
 export const HOME_SERVER=PUBLIC_SERVER;
 export const IPV6_SERVER=PUBLIC_SERVER;
 export const getServerOrigin=()=>PUBLIC_SERVER;
