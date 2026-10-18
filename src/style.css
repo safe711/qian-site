@@ -408,3 +408,7 @@ button[data-action="update"].has-new-update{position:relative}button[data-action
 @media(max-width:420px){.site-brand-footer h2.qian-dynasty{gap:16px;margin-top:20px;max-width:330px}.qian-dynasty .dynasty-ornament{max-width:65px}.site-brand-footer .site-brand-motto{font-size:10px;letter-spacing:.08em}}
 
 .estate-toolbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100%,380px);box-sizing:border-box;margin:0 auto;padding:12px 8px 2px}.estate-toolbar button{min-height:0;gap:3px;padding:9px 4px;border-radius:10px}.estate-toolbar button>span{display:grid;place-items:center;width:32px;height:32px}.estate-toolbar .estate-toolbar-icon{width:32px;height:32px;object-fit:contain;image-rendering:auto}.estate-toolbar button:active{background:#373026}.estate-toolbar button:focus-visible{outline:2px solid #dbc892;outline-offset:3px}
+
+.fixed-profile .owner-archive-photo{display:block;width:100%;height:auto;min-height:0;margin:0 0 20px;padding:0;border:0;border-radius:12px;overflow:hidden;background:#141414;cursor:zoom-in}.fixed-profile .owner-archive-photo img,#profile-portrait .profile-portrait{display:block;width:100%;height:auto;aspect-ratio:auto;max-height:none;object-fit:contain;object-position:center;border-radius:12px;margin:0}
+
+.estate-toolbar{margin-left:0;margin-right:auto}.estate-toolbar button{margin-left:0;margin-right:0}

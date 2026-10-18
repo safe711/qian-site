@@ -97,7 +97,7 @@ const motionClocks=new Map(),finishedMotions=new Set(),leashTrails=new Map(),loc
    if(a.role!=='owner')a.commanded=true;
   }
   const a=actingOwner(),target=actors.find(a=>a.id===q.targetId);
-  if(a&&['rest','read','audience','massage'].includes(q.kind)&&((q.targetId||owner)===owner||q.kind==='massage')){const site=ESTATE_SITES[q.scene||scene]?.find(s=>s.id===q.site)||q.kind==='audience'&&{x:210,y:172},chair=loungeChair(q.site);if(site){a.target=chair?{...chair.foot}:{x:q.kind==='audience'?210:Math.min(600,site.x+24),y:Math.max(scene==='cellar'?192:282,Math.min(326,site.y+32))};a.path=null;a.phase='approach';a.pose='walk';}}
+  if(a&&['rest','read','audience','massage'].includes(q.kind)&&((q.targetId||owner)===owner||q.kind==='massage')){const site=ESTATE_SITES[q.scene||scene]?.find(s=>s.id===q.site)||q.kind==='audience'&&{x:210,y:223.42857142857144},chair=loungeChair(q.site);if(site){a.target=chair?{...chair.foot}:{x:q.kind==='audience'?210:Math.min(600,site.x+24),y:Math.max(scene==='cellar'?192:282,Math.min(326,site.y+32))};a.path=null;a.phase='approach';a.pose='walk';}}
   else if(a&&target&&['walk','ride','fetch','guard','station','feed','pray','play'].includes(q.kind)){a.target={x:target.x-target.direction*20,y:target.y};a.path=null;a.phase='approach';a.pose='walk';}
   paint();start();return()=>{for(const[a,value]of oldActors)Object.assign(a,value);motions=oldMotions;leashes=oldLeashes;cancelledMotionIds.clear();for(const id of oldCancelled)cancelledMotionIds.add(id);finishedMotions.clear();for(const id of oldFinished)finishedMotions.add(id);paint();};
  }
