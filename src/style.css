@@ -239,7 +239,7 @@ nav button.has-new-review::after,.review-red-dot{content:'';position:absolute;to
 /* Clip only the portrait; keep the crown above the circular photo. */
 .owner-portrait{position:relative;display:block;aspect-ratio:1;flex-shrink:0;overflow:visible}
 .owner-avatar-crop{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:#423a2b}
-.owner-avatar-crop>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 52%;transform:scale(2.15);transform-origin:50% 50%;border-radius:0}
+.owner-avatar-crop>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 4%;transform:scale(1.7);transform-origin:50% 0;border-radius:0}
 .owner-avatar-crop>.default-avatar{position:absolute;inset:14%;width:72%;height:72%}
 .owner-member>summary{min-height:104px;padding:16px!important;gap:12px!important}
 .owner-member .family-panel-body{padding:12px}

@@ -73,8 +73,8 @@ export function createLanBackup({records=()=>[],tasks=()=>[],notify=()=>{},getAc
   async function readProfilePhoto(){
     const connection=await connect();const response=await fetcher(connection.url+'/api/private/profile-photo',{credentials:'omit',redirect:'error',cache:'no-store',headers:{Authorization:'Bearer '+connection.key},signal:AbortSignal.timeout(15000)});
     if(!connection.account&&config!==connection)throw Error('服务器 连接已变更');if(!response.ok)throw Error('档案照片暂时无法读取');
-    if(response.headers.get('content-type')!=='image/jpeg'||Number(response.headers.get('content-length'))>8000000)throw Error('档案照片格式无效');
-    const blob=await response.blob(),bytes=new Uint8Array(await blob.slice(0,3).arrayBuffer());if(!blob.size||blob.size>8000000||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)throw Error('档案照片内容无效');return blob;
+    if(!['image/jpeg','image/png'].includes(response.headers.get('content-type'))||Number(response.headers.get('content-length'))>8000000)throw Error('档案照片格式无效');
+    const blob=await response.blob(),bytes=new Uint8Array(await blob.slice(0,8).arrayBuffer());const jpeg=blob.type==='image/jpeg'&&bytes[0]===255&&bytes[1]===216&&bytes[2]===255,png=blob.type==='image/png'&&[137,80,78,71,13,10,26,10].every((n,i)=>bytes[i]===n);if(!blob.size||blob.size>8000000||(!jpeg&&!png))throw Error('档案照片内容无效');return blob;
   }
   async function uploadIdentity(record,video,signature){
     const connection=await connect();
