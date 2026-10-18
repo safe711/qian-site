@@ -7,9 +7,7 @@ import {RIDING_ORIGINAL_ASSETS} from './estate-riding-originals.js';
 import {loadOriginalImage} from './estate-original-image-cache.js';
 import {ESTATE_CATALOG} from './model.js';
 import {isDisasterActor} from './estate-world.js';
-import {QIAN_OWNER_ORIGINAL_ASSETS} from './estate-qian-owner-originals.js';
-export function usesQianOwnerDefault(a){return owner(a)&&a.gender!=='male'&&(!a.avatar?.outfit||['appearance-female-black','appearance-female-orange'].includes(a.avatar.outfit));}
-const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS,...QIAN_OWNER_ORIGINAL_ASSETS},BASE_ASSETS);
+const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS},BASE_ASSETS);
 const images={},frameClips=new WeakMap();
 const owner=a=>a.role==='owner'||a.id==='QIAN_OWNER_001';
 const moving=clip=>['walk','run','stop'].includes(clip);
@@ -19,7 +17,6 @@ export const characterReady=Promise.resolve();
 export function prepareCharacter(a,clip='idle',k=0){const selected=characterSelection(a,clip,k);return loadAsset(selected.id);}
 // Select an authored original sequence. Never repaint, recolour or splice its character.
 export function characterSelection(a,clip,k=0){
- if(usesQianOwnerDefault(a)&&(moving(clip)||clip==='idle')){const id='qian-owner-'+(moving(clip)?'walk':'idle');return{id,index:k%ASSETS[id].frames.length};}
  const look=ESTATE_CATALOG.find(i=>i.id===a.avatar?.outfit&&i.wholeAppearance),g=look?.gender||a.gender||(owner(a)?'female':'male'),male=g==='male';
  // Ordinary servants always use barefoot originals in every scene; movement is crawling.
  if(!owner(a)&&!isDisasterActor(a)&&(['idle','kneel','crawl','guard','bow','disaster-bow','carry'].includes(clip)||moving(clip))){
@@ -48,7 +45,7 @@ export function characterFrame(a,clip='idle',k=0){
 export function drawCharacterFrame(c,a,clip='idle',k=0,{x=a.x,y=a.y,scale=1,flip=a.direction===-1?-1:1,rotation=0}={}){
  const selected=characterFrame(a,clip,k);if(!selected)return false;
  const {image,frame}=selected,[sx,sy,w,h]=frame.sourceBounds,[dx,dy]=frame.offset,s=1.35*scale;
- c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.translate(x,y);c.rotate(rotation);c.scale(flip*s*(ASSETS[selected.asset].facing||1),s);
+ c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.translate(x,y);c.rotate(rotation);c.scale(flip*s,s);
  // Some atlas figures overlap their neighbour's rectangular cell. Clip only the selected original figure.
  if(frame.sourceClip){let path=frameClips.get(frame);if(!path){path=new Path2D();for(const [px,py,pw,ph]of frame.sourceClip)path.rect(px*frame.scale+dx-33,py*frame.scale+dy-56,pw*frame.scale,ph*frame.scale);frameClips.set(frame,path);}c.clip(path);}
  // Sample the original PNG directly into the final scene. No small atlas or intermediate bitmap.

@@ -2,14 +2,13 @@ import {drawCharacterFrame,paperDollReady,dollRig,dollWorldPoint,characterAnchor
 import {BED_FOOTWEAR_POINT,OWNER_CHAIR_RISE,OWNER_BED_RISE} from './estate-motion.js';
 import {ESTATE_CATALOG} from './model.js';
 import {loadOriginalImage} from './estate-original-image-cache.js';
-import {usesQianOwnerDefault} from './estate-original-character-renderer.js';
 let removedBoots=null,bootsLoading=null,bootsRetryAt=0;
 function prepareRemovedBoots(){if(removedBoots||bootsLoading||Date.now()<bootsRetryAt)return bootsLoading;bootsLoading=loadOriginalImage(new URL('../assets/estate-expansion/owner-removed-boots-v1.png',import.meta.url).href).then(image=>{removedBoots=image;},()=>{bootsRetryAt=Date.now()+2000;}).finally(()=>{bootsLoading=null;});return bootsLoading;}
 export const estateSpritesReady=Promise.all([paperDollReady,prepareRemovedBoots()]);
 export const OWNER_ANIMATION_ROWS={idle:[0,8],run:[1,8],stop:[2,4],walk:[3,8],win:[4,2]};
 export function ownerSpriteName(pose){return ({walk:'walk',follow:'walk',run:'run',play:'win',give:'win',throw:'win',win:'win',stop:'stop'})[pose]||'idle';}
-export function ownerWalkFrame(actor,t){return Math.floor(Number.isFinite(actor.walkTravel)?actor.walkTravel/6:t/140)%(usesQianOwnerDefault(actor)?7:8);}
-export function ownerDollPose(a,t){if(a.pose==='lounge-recline')return{clip:'recline',frame:Math.floor(t/650)%4};if(a.pose==='ride'&&a.avatar?.outfit==='model-outfit-01')return {clip:'ride',frame:Math.floor(t/180)%4};if(a.pose==='throw')return {clip:'win',frame:1};if(a.pose==='give')return {clip:'win',frame:Math.floor(t/180)%2};const clip=['sit','lie','ride'].includes(a.pose)?a.pose:ownerSpriteName(a.pose),frame=clip==='walk'?ownerWalkFrame(a,t):['sit','lie','ride'].includes(clip)?Math.floor(t/600)%2:Math.floor(t/(clip==='run'?90:120))%(clip==='idle'&&usesQianOwnerDefault(a)?5:OWNER_ANIMATION_ROWS[clip][1]);return {clip,frame};}
+export function ownerWalkFrame(actor,t){return Math.floor(Number.isFinite(actor.walkTravel)?actor.walkTravel/6:t/140)%8;}
+export function ownerDollPose(a,t){if(a.pose==='lounge-recline')return{clip:'recline',frame:Math.floor(t/650)%4};if(a.pose==='ride'&&a.avatar?.outfit==='model-outfit-01')return {clip:'ride',frame:Math.floor(t/180)%4};if(a.pose==='throw')return {clip:'win',frame:1};if(a.pose==='give')return {clip:'win',frame:Math.floor(t/180)%2};const clip=['sit','lie','ride'].includes(a.pose)?a.pose:ownerSpriteName(a.pose),frame=clip==='walk'?ownerWalkFrame(a,t):['sit','lie','ride'].includes(clip)?Math.floor(t/600)%2:Math.floor(t/(clip==='run'?90:120))%OWNER_ANIMATION_ROWS[clip][1];return {clip,frame};}
 export function ownerOrigin(a,t){if(a.pose==='ride')a={...a,x:a.x+(a.ridingGender==='female'?8*a.direction:0),y:a.y+8};if(a.pose==='lounge-recline')return{x:a.x,y:a.y-30-(['recliner-3','recliner-4'].includes(a.interaction?.site)?6:0),flip:a.avatar?.outfit?.startsWith('model-outfit-')&&a.avatar.outfit!=='model-outfit-01'?-1:1,rotation:.35};if(a.pose==='ride'&&a.avatar?.outfit==='model-outfit-01')return {x:a.x,y:a.y,flip:a.direction===-1?-1:1};const lie=a.pose==='lie'&&a.interaction?.site==='bed';return {x:Math.round(a.x-(a.pose==='ride'?10*a.direction:lie?16:a.pose==='sit'&&a.interaction?.site==='desk'?44:0)),y:Math.round(a.y-(a.pose==='ride'?9+Math.sin(t/140)*.6:lie?OWNER_BED_RISE:a.pose==='sit'&&a.interaction?.site==='desk'?OWNER_CHAIR_RISE:0)),flip:lie?-1:a.direction===-1?-1:1};}
 export function drawOwnerSprite(c,a,t,scale=1){if(a.role!=='owner'&&a.id!=='QIAN_OWNER_001')return false;const {clip,frame}=ownerDollPose(a,t);return drawCharacterFrame(c,{...a,gender:a.gender||'female'},clip,frame,{...ownerOrigin(a,t),scale});}
 export function ownerBedFootwear(actor){if(actor.role!=='owner'||actor.pose!=='lie'||actor.interaction?.site!=='bed'||actor.scene!=='bedroom')return null;const appearance=ESTATE_CATALOG.find(i=>i.id===actor.avatar?.outfit&&i.wholeAppearance);return {shoes:appearance?.footwear||null,socks:appearance?.socks||null,...BED_FOOTWEAR_POINT};}
@@ -18,4 +17,3 @@ export function drawBedFootwear(c,actor){const bed=ownerBedFootwear(actor);if(!b
 
 
 export function ownerLeashPoint(a,t=0){const {clip,frame}=ownerDollPose(a,t);return dollWorldPoint(a,characterAnchor(a,clip,frame,'hand'),{...ownerOrigin(a,t),scale:1.2});}
-
