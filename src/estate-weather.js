@@ -5,7 +5,7 @@ export const WEATHER_WINDOWS={bedroom:[[[273,102],[273,92],[280,82],[287,77],[28
 WEATHER_WINDOWS.lounge=WEATHER_WINDOWS.bedroom;
 function clipOutside(c,scene){c.beginPath();if(scene==='courtyard')c.rect(0,0,640,360);else for(const poly of WEATHER_WINDOWS[scene]||[]){c.moveTo(...poly[0]);for(const p of poly.slice(1))c.lineTo(...p);c.closePath();}c.clip();}
 const mod=(n,m)=>((n%m)+m)%m;
-export function drawEstateWeather(c,scene,type,t,baked=false){if(!WEATHER_TYPES[type])return;c.save();clipOutside(c,scene);c.imageSmoothingEnabled=false;
+export function drawEstateWeather(c,scene,type,t,baked=false){if(scene==='cellar'||!WEATHER_TYPES[type])return;c.save();clipOutside(c,scene);c.imageSmoothingEnabled=false;
  if(type==='sunny'){if(baked){c.restore();return;}c.fillStyle='#ffd68a0b';c.fillRect(0,0,640,360);c.restore();return;}
  if(!baked){c.fillStyle=type==='cloudy'?'#697c9858':['rain','drizzle','thunderstorm'].includes(type)?'#344f7970':'#9bb7cb50';c.fillRect(0,0,640,360);}
  if(type==='cloudy'){for(let i=0;i<6;i++){const x=mod(i*131+t*.006,810)-110,y=20+(i%3)*22;c.fillStyle='#c0ced21a';c.fillRect(Math.floor(x),y,90,7);c.fillRect(Math.floor(x+16),y-7,56,7);}}

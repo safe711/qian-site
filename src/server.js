@@ -1,4 +1,4 @@
-export const PUBLIC_SERVER="https://sandy-jerry-strip-chen.trycloudflare.com";
+export const PUBLIC_SERVER="https://payroll-jokes-suddenly-query.trycloudflare.com";
 export const HOME_SERVER=PUBLIC_SERVER;
 export const IPV6_SERVER=PUBLIC_SERVER;
 export const getServerOrigin=()=>PUBLIC_SERVER;
