@@ -1,21 +1,14 @@
-export const AUDIENCE_WINDOWS=[[8,10],[12,14],[20,22]];
-const clock=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
-export function shrineAudience(now=Date.now(),manual=null){
- const parts=Object.fromEntries(clock.formatToParts(now).map(p=>[p.type,p.value]));
- const seconds=Number(parts.hour)*3600+Number(parts.minute)*60+Number(parts.second)+(now%1000)/1000,midnight=now-seconds*1000;
- const intervals=AUDIENCE_WINDOWS.map(([start,end])=>({startAt:midnight+start*3600000,endsAt:midnight+end*3600000,source:'scheduled'}));
- if(Number.isFinite(manual?.startAt)&&Number.isFinite(manual?.endsAt)&&manual.endsAt>manual.startAt)intervals.push({...manual,source:'manual'});
- const active=intervals.filter(i=>now>=i.startAt&&now<i.endsAt),nextStartsAt=intervals.filter(i=>i.startAt>now).reduce((n,i)=>Math.min(n,i.startAt),midnight+86400000+8*3600000);
- if(active.length){const startAt=Math.min(...active.map(i=>i.startAt)),endsAt=Math.max(...active.map(i=>i.endsAt)),elapsed=now-startAt;return{active:true,phase:elapsed<6000?'approach':'bow',elapsed,progress:Math.min(1,elapsed/6000),startAt,endsAt,remainingMs:endsAt-now,nextStartsAt,source:active.some(i=>i.source==='manual')?'manual':'scheduled'};}
- const ended=intervals.filter(i=>now>=i.endsAt&&now<i.endsAt+6000).sort((a,b)=>b.endsAt-a.endsAt)[0];
- if(ended)return{active:false,phase:'return',elapsed:now-ended.endsAt,progress:(now-ended.endsAt)/6000,remainingMs:nextStartsAt-now,nextStartsAt};
- return{active:false,phase:'home',elapsed:0,progress:0,remainingMs:nextStartsAt-now,nextStartsAt};
+export const SHRINE_SOFA={id:'audience-sofa',name:'现圣沙发',x:332,y:253,seat:{scene:'shrine',x:332,y:294,direction:1}};
+// A persisted seated interaction is the only trigger. Old clock/manual windows are ignored.
+export function shrineAudience(now=Date.now(),state=null){
+ if(state?.version!==2||!state.ownerId||!Number.isFinite(state.startAt))return{active:false,phase:'home',elapsed:0,progress:0};
+ const elapsed=Math.max(0,now-state.startAt),reached=now>=state.startAt;
+ if(Number.isFinite(state.endedAt)){if(state.endedAt<state.startAt||now>=state.endedAt+6000)return{active:false,phase:'home',elapsed:0,progress:0};return{active:false,phase:'return',elapsed:now-state.endedAt,progress:Math.min(1,(now-state.endedAt)/6000),returnFrom:Math.min(1,(state.endedAt-state.startAt)/6000),ownerId:state.ownerId,ownerName:state.ownerName};}
+ if(!reached)return{active:false,phase:'seating',elapsed:0,progress:0,ownerId:state.ownerId,ownerName:state.ownerName};
+ return{active:true,phase:elapsed<6000?'approach':'bow',elapsed,progress:Math.min(1,elapsed/6000),startAt:state.startAt,ownerId:state.ownerId,ownerName:state.ownerName,source:'seated'};
 }
-export function audienceCountdown(audience){const seconds=Math.max(0,Math.ceil(audience.remainingMs/1000)),hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60),rest=seconds%60;return (audience.active?'现圣结束倒计时 ':'距离下次现圣 ')+(hours?String(hours).padStart(2,'0')+':':'')+String(minutes).padStart(2,'0')+':'+String(rest).padStart(2,'0');}
-export function disasterAudiencePosition(actor,now=Date.now(),manual=null){
- const right=actor.id==='QIAN-DZ-002'||actor.number==='02',home={scene:'shrine',x:right?490:165,y:305,direction:right?-1:1},post={scene:'shrine',x:right?416:238,y:305,direction:right?-1:1},audience=shrineAudience(now,manual);
- const progress=audience.phase==='bow'?1:audience.phase==='approach'?audience.progress:audience.phase==='return'?1-audience.progress:0;
- const moving=['approach','return'].includes(audience.phase),back=audience.phase==='return';
- const title='钱若娟主子',words=[`${title}，奴才给您磕头`,`${title}，奴才给您挡灾`,`感谢${title}大恩`];
+export function audienceCountdown(audience){return audience.active?'主子现圣中 · 站起即结束':audience.phase==='seating'?'主子正在前往沙发':audience.phase==='return'?'现圣结束 · 返回原位':'点击沙发坐下开启现圣';}
+export function disasterAudiencePosition(actor,now=Date.now(),state=null){
+ const right=actor.id==='QIAN-DZ-002'||actor.number==='02',home={scene:'shrine',x:right?490:165,y:305,direction:right?-1:1},post={scene:'shrine',x:right?416:238,y:305,direction:right?-1:1},audience=shrineAudience(now,state),progress=audience.phase==='bow'?1:audience.phase==='approach'?audience.progress:audience.phase==='return'?(1-audience.progress)*(audience.returnFrom??1):0,moving=['approach','return'].includes(audience.phase),back=audience.phase==='return',title=(audience.ownerName||'钱若娟')+'主子',words=[`${title}，奴才给您磕头`,`${title}，奴才给您挡灾`,`感谢${title}大恩`];
  return{...home,x:home.x+(post.x-home.x)*progress,direction:back?-home.direction:home.direction,pose:moving?'crawl':'prostrate',audiencePhase:audience.phase,audienceClock:Math.max(0,audience.elapsed-6000),audienceText:audience.phase==='bow'?words[Math.floor(Math.max(0,audience.elapsed-6000)/1620)%3]:null,chainAnchor:{x:home.x,y:5}};
 }

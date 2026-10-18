@@ -19,6 +19,7 @@ export const characterReady=Promise.resolve();
 export function prepareCharacter(a,clip='idle',k=0){const selected=characterSelection(a,clip,k);return loadAsset(selected.id);}
 // Select an authored original sequence. Never repaint, recolour or splice its character.
 export function characterSelection(a,clip,k=0){
+ if(owner(a)&&clip==='audience')return{id:'qian-owner-audience',index:k%9};
  if(usesQianOwnerDefault(a)){const action=moving(clip)?'walk':clip==='win'?'idle':clip,id='qian-owner-'+action;if(ASSETS[id])return{id,index:k%ASSETS[id].frames.length};}
  const look=ESTATE_CATALOG.find(i=>i.id===a.avatar?.outfit&&i.wholeAppearance),g=look?.gender||a.gender||(owner(a)?'female':'male'),male=g==='male';
  // Ordinary servants always use barefoot originals in every scene; movement is crawling.
