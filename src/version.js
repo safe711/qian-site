@@ -1,5 +1,5 @@
-export const APP_VERSION='1.1.0';
+export const APP_VERSION='1.1.1';
 export const CLIENT_BUILD=`qian-shell-v${APP_VERSION}`;
-export const RELEASES=[{version:'1.1.0',date:'2026-10-18',changes:['恢复钱若娟主子照片，迁入四位奴才可找到的个人档案、头像和手写契约原件。','移除档案中的父母固定卡片，照片与契约保持私密读取。','暂时关闭新增订阅付款与签字入口，撤下旧收款信息，保留历史和契约查询。']},{version:'1.0.1',date:'2026-10-18',changes:['更新钱氏源流与家风、澳门钱家及钱若娟介绍，统一澳门地域称谓。','调整于涵与小姜账号编号及相关显示。','修复四位与八位密码登录及隐去解锁，隔离改号前的本机缓存。']},{version:'1.0.0',date:'2026-10-18',changes:['THE QIAN IMPERIUM 首次发布，主人为钱若娟，沿用现有人物素材与玩法。','独立账号、媒体与空白存档，不导入原站数据。']}];
+export const RELEASES=[{version:'1.1.1',date:'2026-10-18',changes:['限制角色原图下载并发，延长无数据等待时间，降低网络缓慢时的图片中断。']},{version:'1.1.0',date:'2026-10-18',changes:['恢复钱若娟主子照片，迁入四位奴才可找到的个人档案、头像和手写契约原件。','移除档案中的父母固定卡片，照片与契约保持私密读取。','暂时关闭新增订阅付款与签字入口，撤下旧收款信息，保留历史和契约查询。']},{version:'1.0.1',date:'2026-10-18',changes:['更新钱氏源流与家风、澳门钱家及钱若娟介绍，统一澳门地域称谓。','调整于涵与小姜账号编号及相关显示。','修复四位与八位密码登录及隐去解锁，隔离改号前的本机缓存。']},{version:'1.0.0',date:'2026-10-18',changes:['THE QIAN IMPERIUM 首次发布，主人为钱若娟，沿用现有人物素材与玩法。','独立账号、媒体与空白存档，不导入原站数据。']}];
 
 export function releaseLogHtml(){return `<dialog id="release-log" class="contract-viewer" aria-labelledby="release-log-title"><div class="contract-viewer-header"><h3 id="release-log-title">更新日志</h3><button type="button" data-action="close-release-log">关闭</button></div><p>当前版本：${escape(APP_VERSION)}</p>${RELEASES.map(release=>`<article><h3>${escape(release.version)}</h3><small>${escape(release.date)}</small><ul>${release.changes.map(change=>`<li>${escape(change)}</li>`).join('')}</ul></article>`).join('')}</dialog>`;}
