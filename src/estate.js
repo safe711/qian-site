@@ -7,7 +7,7 @@ import {disasterAudiencePosition,shrineAudience,audienceCountdown} from './estat
 import {drawEstateExpansion} from './estate-expansion-art.js';
 import {estateSeason,estatePeriod,drawEstateExterior,prepareEstateBackground,estateBackgroundStatus,SEASON_WEATHER,SEASON_NAMES,PERIOD_NAMES} from './estate-environment.js';
 import {characterChoices,mountCharacterChoices} from './character-choices.js';
-import {appearanceThumbnail} from './estate-original-character-renderer.js';
+import {appearanceThumbnail,prepareCharacter} from './estate-original-character-renderer.js';
 import {interactionIcon,drawToyBall} from './estate-interaction-art.js';
 import {openEstateWardrobe} from './estate-wardrobe.js';
 import {WEATHER_TYPES,estateWeather,drawEstateWeather} from './estate-weather.js';
@@ -98,7 +98,7 @@ const motionClocks=new Map(),finishedMotions=new Set(),leashTrails=new Map(),loc
  function goodsDetail(item,onUpdate=()=>{}){
   const master=account.role==='owner',wearable=item.kind==='outfit'&&item.wholeAppearance===true,compatible=item.role==='both'||item.role===account.role,has=!!shopInventory()[item.id],duplicate=has&&item.kind!=='food';
   const d=modal(item.name,'<div class="estate-goods-detail"><img data-appearance-id="'+item.id+'" src="'+thumb(item)+'" alt="'+esc(item.name)+'"><p>'+esc(item.rank)+' · '+(master?'免费购买':item.cost+'积分 · 兑换至主子背包')+'</p>'+(wearable?'<div class="estate-avatar-preview"><canvas width="192" height="192"></canvas></div>':'')+'</div><div class="estate-menu-actions"><button data-goods-buy '+(duplicate?'disabled':'')+'>'+(duplicate?(master?'已收藏':'主子已拥有'):master?'免费购买':'兑换给主子')+'</button>'+(master?(wearable&&compatible?'<button data-goods-equip '+(!own().owned[item.id]?'disabled':'')+'>佩戴这件装扮</button>':'<button data-goods-use '+(!own().owned[item.id]?'disabled':'')+'>'+(wearable?'为角色换装':item.kind==='collar'?'为角色佩戴':item.kind==='furniture'?'布置家具':'使用道具')+'</button>'):'')+(master&&item.role!=='owner'&&item.kind!=='food'?'<button data-goods-gift '+(!own().owned[item.id]?'disabled':'')+'>赠送收藏</button>':'')+'</div>');
-  if(wearable){const previewRole=item.role==='slave'?'slave':account.role,avatar={...estateDefaults(previewRole).avatar,outfit:item.id},ctx=d.querySelector('canvas').getContext('2d');ctx.scale(2.2,2.2);drawActor(ctx,{id:'shop-preview',x:44,y:84,avatar,gender:accountGender(account),role:previewRole,pose:previewRole==='slave'?'kneel':'idle'},340,1);}
+  if(wearable){const previewRole=item.role==='slave'?'slave':account.role,avatar={...estateDefaults(previewRole).avatar,outfit:item.id},ctx=d.querySelector('canvas').getContext('2d');const actor={id:'shop-preview',x:44,y:84,avatar,gender:item.gender||accountGender(account),role:previewRole,pose:previewRole==='slave'?'kneel':'idle'},draw=()=>{if(!d.open)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,192,192);ctx.scale(2.2,2.2);drawActor(ctx,actor,340,1);};draw();prepareCharacter(actor,previewRole==='slave'?'kneel':'idle',0).then(draw).catch(()=>{});}
   d.querySelector('[data-goods-buy]').onclick=async()=>{if(duplicate)return;const button=d.querySelector('[data-goods-buy]');button.disabled=true;const result=await action({kind:'purchase',itemId:item.id});if(result){d.close();onUpdate();goodsDetail(item,onUpdate);}else button.disabled=false;};
   d.querySelector('[data-goods-gift]')?.addEventListener('click',()=>{d.close();giftMenu(item.id);});
   d.querySelector('[data-goods-equip]')?.addEventListener('click',async()=>{if(await action({kind:'avatar',avatar:{...own().avatar,outfit:item.id}})){d.close();onUpdate();}});
