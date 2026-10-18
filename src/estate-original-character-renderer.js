@@ -21,8 +21,8 @@ export const characterReady=Promise.resolve();
 export function prepareCharacter(a,clip='idle',k=0){const selected=characterSelection(a,clip,k);return loadAsset(selected.id);}
 // Select an authored original sequence. Never repaint, recolour or splice its character.
 export function characterSelection(a,clip,k=0){
- if(owner(a)&&clip==='audience')return{id:'qian-owner-audience',index:k%9};
- if(usesQianOwnerSprites(a)){const action=moving(clip)?'walk':clip==='win'?'idle':clip,id=(usesQianOwnerDefault(a)?'qian-owner':a.avatar.outfit)+'-'+action;if(ASSETS[id])return{id,index:k%ASSETS[id].frames.length};}
+ if(owner(a)&&clip==='audience'){const id=a.avatar?.outfit+'-audience';return{id:ASSETS[id]?id:'qian-owner-audience',index:k%9};}
+ if(usesQianOwnerSprites(a)){const action=moving(clip)?'walk':clip==='win'?'idle':clip,id=(usesQianOwnerDefault(a)?'qian-owner':a.avatar.outfit)+'-'+action;if(a.scene==='lounge'&&ASSETS[id+'-bare'])return{id:id+'-bare',index:k%ASSETS[id+'-bare'].frames.length};if(ASSETS[id])return{id,index:k%ASSETS[id].frames.length};}
  const look=ESTATE_CATALOG.find(i=>i.id===a.avatar?.outfit&&i.wholeAppearance),g=look?.gender||a.gender||(owner(a)?'female':'male'),male=g==='male';
  // Ordinary servants always use barefoot originals in every scene; movement is crawling.
  if(!owner(a)&&!isDisasterActor(a)&&(['idle','kneel','crawl','guard','bow','disaster-bow','carry'].includes(clip)||moving(clip))){
@@ -67,3 +67,5 @@ export function characterAnchor(a,clip,k,point='neck'){
 export const rasterDollFrame=characterFrame;
 
 const appearanceThumbnails=new Map();export function appearanceThumbnail(item){if(!item?.wholeAppearance)return null;if(appearanceThumbnails.has(item.id))return appearanceThumbnails.get(item.id);const f=characterFrame({role:item.role==='slave'?'slave':'owner',gender:item.gender,avatar:{outfit:item.id}},'idle',0);if(!f)return null;const cv=document.createElement('canvas');cv.width=cv.height=160;const c=cv.getContext('2d'),[x,y,w,h]=f.frame.sourceBounds,scale=144/Math.max(w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(f.image,x,y,w,h,(160-w*scale)/2,(160-h*scale)/2,w*scale,h*scale);const result=cv.toDataURL();appearanceThumbnails.set(item.id,result);return result;}
+
+export function audienceUsesFurniture(a){return characterSelection(a,'audience',0).id==='qian-owner-audience';}

@@ -1,5 +1,5 @@
 import {loadOriginalImage} from './estate-original-image-cache.js';
-import {characterFrame,prepareCharacter} from './estate-original-character-renderer.js';
+import {characterFrame,prepareCharacter,audienceUsesFurniture} from './estate-original-character-renderer.js';
 import {shrineAudience} from './estate-shrine-audience.js';
 import {drawBedFootwear} from './estate-sprites.js';
 import {estatePeriod} from './estate-environment.js';
@@ -11,6 +11,6 @@ export function prepareEstateExpansion(scene){if(scene==='cellar'){for(const id 
 export function estateExpansionStatus(){return Object.fromEntries(shrineOriginals.map(id=>{const state=originals.get(id);return[id,{ready:!!state?.image,loading:!!state?.pending,retryAt:state?.retryAt||0}];}));}
 // Furniture and NPCs use complete original PNGs; no character repainting or splicing.
 export function drawEstateExpansion(c,scene,now,actors=[],manualAudience=null){prepareEstateExpansion(scene);c.save();c.imageSmoothingEnabled=true;const period=estatePeriod(now);c.filter=scene==='cellar'?'none':period==='night'?'brightness(.72)':period==='dusk'?'brightness(.9)':'none';
- if(scene==='cellar'){const sofa=original('shrine-king-empty-sofa-v1');if(sofa&&!actors.some(a=>a.pose==='audience'&&characterFrame(a,'audience',0)))c.drawImage(sofa,135,255.42857142857144-995*150/1430,150,1070*150/1430);}
+ if(scene==='cellar'){const sofa=original('shrine-king-empty-sofa-v1');if(sofa&&!actors.some(a=>a.pose==='audience'&&audienceUsesFurniture(a)&&characterFrame(a,'audience',0)))c.drawImage(sofa,135,255.42857142857144-995*150/1430,150,1070*150/1430);}
  if(scene==='lounge')for(const [i,actor]of actors.entries()){c.save();c.translate(133+i*23-450,329-297);drawBedFootwear(c,{...actor,role:'owner',pose:'lie',scene:'bedroom',interaction:{site:'bed'}});c.restore();}
  c.restore();}
