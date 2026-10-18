@@ -395,3 +395,14 @@ button[data-action="update"].has-new-update{position:relative}button[data-action
 
 /* Estate toolbar: matching leather and brass pixel icons. */
 .estate-toolbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px 8px 2px}.estate-toolbar button{min-height:76px;gap:7px;padding:12px 6px;border-radius:12px;background:#292722;border-color:#645941}.estate-toolbar button>span{display:grid;place-items:center;width:36px;height:36px}.estate-toolbar .estate-toolbar-icon{width:36px;height:36px;image-rendering:pixelated}.estate-toolbar button:active{background:#373026}.estate-toolbar button:focus-visible{outline:2px solid #dbc892;outline-offset:3px}
+
+/* Dynasty signature: fixed gold type and symmetric engraved ornaments. */
+.site-brand-footer h2.qian-dynasty{display:flex;align-items:center;justify-content:center;gap:22px;margin:24px auto 14px;max-width:520px;font-family:'STKaiti','KaiTi','Noto Serif CJK TC','PMingLiU',serif;font-size:clamp(38px,6vw,52px);font-weight:700;line-height:1.35;color:#e5c478;letter-spacing:0;text-shadow:0 1px 0 #705022,0 0 22px #b9904520}
+.qian-dynasty .dynasty-name{display:block;white-space:nowrap;letter-spacing:.24em;padding-left:.24em}
+.qian-dynasty .dynasty-ornament{position:relative;display:block;flex:1;max-width:108px;min-width:35px;height:22px;background:linear-gradient(90deg,transparent,#aa8546 55%,#d5b36d) center/100% 1px no-repeat}
+.qian-dynasty .dynasty-ornament:last-child{transform:scaleX(-1)}
+.dynasty-ornament:before,.dynasty-ornament:after{content:'';position:absolute;right:10px;width:29px;height:7px;border:1px solid #b99553;border-left:0;border-bottom:0;transform:skewX(-32deg)}
+.dynasty-ornament:before{top:2px}.dynasty-ornament:after{bottom:2px;transform:scaleY(-1) skewX(-32deg)}
+.dynasty-ornament i{position:absolute;width:6px;height:6px;right:0;top:8px;border:1px solid #e0bf79;transform:rotate(45deg);background:#161512}
+.site-brand-footer .site-brand-motto{color:#b69a65;letter-spacing:.12em}
+@media(max-width:420px){.site-brand-footer h2.qian-dynasty{gap:16px;margin-top:20px;max-width:330px}.qian-dynasty .dynasty-ornament{max-width:65px}.site-brand-footer .site-brand-motto{font-size:10px;letter-spacing:.08em}}
