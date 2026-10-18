@@ -1,4 +1,4 @@
-export const PUBLIC_SERVER="https://legendary-justify-axis-swing.trycloudflare.com";
+export const PUBLIC_SERVER="https://missing-tour-compressed-describes.trycloudflare.com";
 export const HOME_SERVER=PUBLIC_SERVER;
 export const IPV6_SERVER=PUBLIC_SERVER;
 export const getServerOrigin=()=>PUBLIC_SERVER;
