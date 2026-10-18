@@ -46,7 +46,7 @@ export function estateEtiquette(now=Date.now(),customDates=[]){
   return {active:true,key:day.date+':daily:'+index,kind:'daily',date:day.date,names:['日常请安'],messages:['钱家主子吉祥'],spring:false,tethered:false,startAt:day.startAt+start*60000,endsAt:day.startAt+end*60000};
 }
 export function etiquettePosition(actor,members,now,event){
-  if(!event||actor.role==='owner'||actor.type==='挡灾奴'||/^QIAN-DZ-/.test(actor.id||''))return null;const people=members.filter(a=>a.role!=='owner'&&a.type!=='挡灾奴'&&!/^QIAN-DZ-/.test(a.id||'')).sort((a,b)=>a.id.localeCompare(b.id)),index=people.findIndex(a=>a.id===actor.id);if(index<0)return null;
+  if(actor.commanded||!event||actor.role==='owner'||actor.type==='挡灾奴'||/^QIAN-DZ-/.test(actor.id||''))return null;const people=members.filter(a=>a.role!=='owner'&&a.type!=='挡灾奴'&&!/^QIAN-DZ-/.test(a.id||'')).sort((a,b)=>a.id.localeCompare(b.id)),index=people.findIndex(a=>a.id===actor.id);if(index<0)return null;
   const columns=Math.ceil(people.length/2),row=Math.floor(index/columns),column=index%columns,step=Math.min(100,250/Math.max(1,columns-1));
   const elapsed=Math.max(0,now-event.startAt),phase=elapsed%6480;
   return {scene:'courtyard',x:130+column*step+row*25,y:282+row*40,direction:1,row,column,pose:phase<1620?'kneel':'prostrate',audiencePhase:'bow',audienceClock:phase<1620?0:phase-1620,audienceText:null,etiquette:true,etiquetteClock:phase<1620?0:phase-1620,target:null,greeting:null,interaction:null};
