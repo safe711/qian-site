@@ -390,3 +390,5 @@ button[data-action="update"].has-new-update{position:relative}button[data-action
 #startup-splash{background:#dfd7cb}#startup-splash img{width:100%;height:100%;max-width:100%;object-fit:contain}.family-cover>img{width:min(100%,420px);height:auto;max-height:none;object-fit:contain;border-radius:12px}.site-brand-footer .site-brand-lockup img{width:min(360px,100%);max-width:100%;height:auto;border-radius:10px;opacity:1}
 
 .unlock-symbol img{display:block;width:76px;height:76px;object-fit:contain;border-radius:16px;margin:0 auto}
+
+.site-brand-footer .site-brand-lockup img{border-radius:0}
