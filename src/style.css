@@ -406,3 +406,5 @@ button[data-action="update"].has-new-update{position:relative}button[data-action
 .dynasty-ornament i{position:absolute;width:6px;height:6px;right:0;top:8px;border:1px solid #e0bf79;transform:rotate(45deg);background:#161512}
 .site-brand-footer .site-brand-motto{color:#b69a65;letter-spacing:.12em}
 @media(max-width:420px){.site-brand-footer h2.qian-dynasty{gap:16px;margin-top:20px;max-width:330px}.qian-dynasty .dynasty-ornament{max-width:65px}.site-brand-footer .site-brand-motto{font-size:10px;letter-spacing:.08em}}
+
+.estate-toolbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100%,380px);box-sizing:border-box;margin:0 auto;padding:12px 8px 2px}.estate-toolbar button{min-height:0;gap:3px;padding:9px 4px;border-radius:10px}.estate-toolbar button>span{display:grid;place-items:center;width:32px;height:32px}.estate-toolbar .estate-toolbar-icon{width:32px;height:32px;object-fit:contain;image-rendering:auto}.estate-toolbar button:active{background:#373026}.estate-toolbar button:focus-visible{outline:2px solid #dbc892;outline-offset:3px}
