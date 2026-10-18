@@ -392,3 +392,6 @@ button[data-action="update"].has-new-update{position:relative}button[data-action
 .unlock-symbol img{display:block;width:76px;height:76px;object-fit:contain;border-radius:16px;margin:0 auto}
 
 .site-brand-footer .site-brand-lockup img{border-radius:0}
+
+/* Estate toolbar: matching leather and brass pixel icons. */
+.estate-toolbar{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px 8px 2px}.estate-toolbar button{min-height:76px;gap:7px;padding:12px 6px;border-radius:12px;background:#292722;border-color:#645941}.estate-toolbar button>span{display:grid;place-items:center;width:36px;height:36px}.estate-toolbar .estate-toolbar-icon{width:36px;height:36px;image-rendering:pixelated}.estate-toolbar button:active{background:#373026}.estate-toolbar button:focus-visible{outline:2px solid #dbc892;outline-offset:3px}
