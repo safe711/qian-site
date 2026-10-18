@@ -49,7 +49,7 @@ const staticHosting=isStaticHosting();
 const pushClient=createPushClient({staticHosting});
 const content = document.querySelector('#content');
 const seal=document.querySelector('.seal');
-seal.textContent='';seal.setAttribute('role','img');seal.setAttribute('aria-label','THE QIAN IMPERIUM 龙纹标识');
+seal.textContent='';seal.setAttribute('role','img');seal.setAttribute('aria-label','THE QIAN IMPERIUM Q 字狮子王冠标识');
 const message = document.querySelector('#message');
 const notify=createNotifier(message);
 const versionLabel=document.createElement('p');
@@ -219,7 +219,7 @@ function render() {
   if(reportOpen && page==='今日'){renderReport();return;}
   if(ritualKind && page==='今日') {renderRitual();return;}
   if(page==='今日'&&!ritualKind&&!reportOpen)body=dayRecordsHtml(state,true,accountClient.profile)+body;
-  if(page==='档案')body=dayRecordsHtml(state,false,accountClient.profile)+body.replace('</section><section><h3>礼仪照片', '</section><section class="fixed-profile parents-profile" aria-labelledby="parents-profile-title"><small class="eyebrow">钱家 · 固定档案</small><h3 id="parents-profile-title">主子：钱若娟父母</h3><div class="parents-photo-blank" role="img" aria-label="钱若娟父母照片位置，暂时留白"></div><dl><div><dt>生日</dt><dd>未知</dd></div><div><dt>专属奴隶</dt><dd><span class="parents-servant">挡灾奴01　于耕宝</span><span class="parents-servant">挡灾奴02　杜其香</span></dd></div></dl><h4>简介</h4><p>享用钱家挡灾奴01、02号。每个月将自身灾祸出售给挡灾奴，收取钱财并换取自己平安。将自身灾祸赐予挡灾奴。</p></section>'+servantProfileHtml(state,accountClient.profile)+disasterServantsHtml()+'<section><h3>礼仪照片');
+  if(page==='档案')body=dayRecordsHtml(state,false,accountClient.profile)+body.replace('</section><section><h3>礼仪照片', '</section>'+servantProfileHtml(state,accountClient.profile)+disasterServantsHtml()+'<section><h3>礼仪照片');
   content.innerHTML = (page==='家规'?'':heading) + body;
   if(page==='积分'){unmountEstate=mountEstate(content,{getState:()=>state,getAccount:()=>accountClient.profile,commit:change=>commit(change,false),client:accountClient,notify});unmountAchievements=mountAchievements(content,{getState:()=>state,getAccount:()=>accountClient.profile,commit:change=>commit(change,false),notify,onMediaSaved:()=>accountClient.sync()});roleController.refresh();unmountCollection=mountCollection(content,{getState:()=>state,commit:change=>commit(change,false),notify,account:accountClient.profile.id,editable:false,loadMedia:id=>getSubscriptionMedia(id)});unmountCalendar=mountScoreCalendar(content,{getState:()=>state,getAccount:()=>accountClient.profile,notify,onClose:render,onMediaSaved:()=>accountClient.sync(),getReviews:()=>roleController.reviews,onReviewSeen:date=>roleController.seen(date),dayExtra:date=>{const reviews=roleController.reviews.filter(r=>r.date===date);return reviews.length?'<section class="slave-review-details"><h4>主子评价</h4>'+reviews.map(r=>'<p>'+escape(r.by)+' · '+({satisfied:'满意',neutral:'一般',angry:'不满意'})[r.rating]+'<small>'+escape(r.context==='day'?'当日表现':'任务表现')+'</small></p>').join('')+'</section>':'';}});}
   if(page==='档案')archiveFoldouts();

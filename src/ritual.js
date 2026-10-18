@@ -1,5 +1,5 @@
 import {dayKey,validDate,daily,RITUAL_KINDS,RITUAL_NAMES} from './model.js';
-const gratitudeVow='感谢主子允许狗奴才的爸妈为钱主子的父母及姥姥行挡灾之礼。狗奴才谨立终身尽责之愿：愿狗奴爸妈在世之日始终尽责守礼，为钱家祈福挡灾，直至生命终了。';
+const gratitudeVow='感谢主子允许狗奴才的爸妈为钱若娟行挡灾之礼。狗奴才谨立终身尽责之愿：愿狗奴爸妈在世之日始终尽责守礼，为钱家祈福挡灾，直至生命终了。';
 const greetings={
   morning:[
     '晨光初起，狗奴才跪候给钱家主子请安，钱主子万岁万万岁。愿主子今日精神舒畅、诸事顺遂，狗奴才恭敬候命，以认真侍奉开启一日。',
@@ -53,7 +53,7 @@ export function ritualGreeting(kind,date=dayKey()) {
 export function ritualInstruction(kind) {
   if(kind==='morning')return '请恭敬跪好，对钱家主子语音朗读以下文字，并磕头 10 个请安。';
   if(kind==='evening')return '请恭敬跪好，对钱家主子语音朗读以下文字，并磕头请安。';
-  if(kind==='gratitude')return '请恭敬跪好，对钱家主子朗读以下谢恩文字，感谢恩准狗奴爸妈为钱主子的父母及姥姥行挡灾之礼，并磕头谢恩。';
+  if(kind==='gratitude')return '请恭敬跪好，对钱家主子朗读以下谢恩文字，感谢恩准狗奴爸妈为钱若娟行挡灾之礼，并磕头谢恩。';
   return '对钱家主子语音朗读以下文字，完成午间请安。';
 }
 export function requireRitualPhoto(photo,kind,date=dayKey()) {

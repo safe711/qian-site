@@ -1,5 +1,5 @@
 import {accountGender} from './model.js';
-export const disasterDescription='本订阅允许钱家挡灾奴购买钱若娟父母及姥姥的灾祸，赋予挡灾奴为钱家人遮挡灾祸的职责与荣幸。';
+export const disasterDescription='挡灾奴的职责是为钱若娟挡灾。';
 export const disasterMembers=[{id:'QIAN-DZ-001',name:'于耕宝',identity:'挡灾奴01号',gender:'male'},{id:'QIAN-DZ-002',name:'杜其香',identity:'挡灾奴02号',gender:'female'}];
 const DEFAULT_AVATAR_SHEET=new URL('../assets/avatars/elder-front-approved-sheet-v1.png',import.meta.url).href;
 export function defaultAvatar(gender='male'){const female=gender==='female';return '<svg class="avatar-silhouette default-avatar approved-default-avatar" viewBox="'+(female?'900 34 839 819':'35 34 838 819')+'" role="img" aria-label="'+(female?'女性':'男性')+'默认头像"><image href="'+DEFAULT_AVATAR_SHEET+'" x="0" y="0" width="1774" height="887"/></svg>';}

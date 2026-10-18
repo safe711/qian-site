@@ -1,11 +1,11 @@
 export const BRAND_LINE='钱家狗奴才专用，致力于一生服务钱家。';
 let logoPromise;
-export const SHARE_FOOTER_HEIGHT=340;
+export const SHARE_FOOTER_HEIGHT=420;
 export async function drawBrandFooter(context,width,height){
- let logo=null;if(typeof Image!=='undefined'){logoPromise??=new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error('应用 Logo 加载失败，请联网更新后重试'));image.src=new URL('../assets/qian-brand.svg',import.meta.url).href;});logo=await logoPromise;}
- const previous={alpha:context.globalAlpha,font:context.font,fill:context.fillStyle};const top=height-305;
+ let logo=null;if(typeof Image!=='undefined'){logoPromise??=new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error('应用 Logo 加载失败，请联网更新后重试'));image.src=new URL('../assets/qian-logo.png',import.meta.url).href;});logo=await logoPromise;}
+ const previous={alpha:context.globalAlpha,font:context.font,fill:context.fillStyle};const top=height-390;
  const centered=(text,y,font,alpha)=>{context.font=font;context.globalAlpha=alpha;context.fillStyle='#b0aaa0';context.fillText(text,(width-context.measureText(text).width)/2,y);};
- const logoWidth=260,logoHeight=logoWidth*(logo?.naturalHeight&&logo?.naturalWidth?logo.naturalHeight/logo.naturalWidth:.48);context.globalAlpha=.7;if(logo)context.drawImage(logo,(width-logoWidth)/2,top,logoWidth,logoHeight);
+ const logoWidth=340,logoHeight=logoWidth*(logo?.naturalHeight&&logo?.naturalWidth?logo.naturalHeight/logo.naturalWidth:.48);context.globalAlpha=1;if(logo)context.drawImage(logo,(width-logoWidth)/2,top,logoWidth,logoHeight);
  centered('— 钱氏传承 —',top+logoHeight+35,'22px system-ui, sans-serif',.55);
  centered('尊卑有序 · 忠诚为誓 · 荣耀永续',top+logoHeight+70,'18px system-ui, sans-serif',.45);
  context.globalAlpha=.18;context.fillStyle='#b0aaa0';context.fillRect(width*.18,top+logoHeight+94,width*.64,1);

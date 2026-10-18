@@ -16,6 +16,6 @@ export function disasterAudiencePosition(actor,now=Date.now(),manual=null){
  const right=actor.id==='QIAN-DZ-002'||actor.number==='02',home={scene:'shrine',x:right?490:165,y:305,direction:right?-1:1},post={scene:'shrine',x:right?416:238,y:305,direction:right?-1:1},audience=shrineAudience(now,manual);
  const progress=audience.phase==='bow'?1:audience.phase==='approach'?audience.progress:audience.phase==='return'?1-audience.progress:0;
  const moving=['approach','return'].includes(audience.phase),back=audience.phase==='return';
- const title=right?'主子奶奶':'主子爷',words=[`${title}，奴才给您磕头`,`${title}，奴才给您挡灾`,`感谢${title}大恩`];
+ const title='钱若娟主子',words=[`${title}，奴才给您磕头`,`${title}，奴才给您挡灾`,`感谢${title}大恩`];
  return{...home,x:home.x+(post.x-home.x)*progress,direction:back?-home.direction:home.direction,pose:moving?'crawl':'prostrate',audiencePhase:audience.phase,audienceClock:Math.max(0,audience.elapsed-6000),audienceText:audience.phase==='bow'?words[Math.floor(Math.max(0,audience.elapsed-6000)/1620)%3]:null,chainAnchor:{x:home.x,y:5}};
 }
