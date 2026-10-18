@@ -412,3 +412,14 @@ button[data-action="update"].has-new-update{position:relative}button[data-action
 .fixed-profile .owner-archive-photo{display:block;width:100%;height:auto;min-height:0;margin:0 0 20px;padding:0;border:0;border-radius:12px;overflow:hidden;background:#141414;cursor:zoom-in}.fixed-profile .owner-archive-photo img,#profile-portrait .profile-portrait{display:block;width:100%;height:auto;aspect-ratio:auto;max-height:none;object-fit:contain;object-position:center;border-radius:12px;margin:0}
 
 .estate-toolbar{margin-left:0;margin-right:auto}.estate-toolbar button{margin-left:0;margin-right:0}
+
+/* Approved restrained startup design, matching qian-startup-v2 preview. */
+html:has(body.startup-active),body.startup-active{overflow:hidden;overscroll-behavior:none}
+#startup-splash{display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 42%,#21201b 0%,#141412 42%,#101010 76%);color:#c6a75e;font-family:Georgia,'Songti SC','SimSun',serif}
+#startup-splash .startup-identity{width:min(79vw,510px);transform:translateY(-24px);text-align:center;flex:none}
+#startup-splash .startup-identity img{display:block;width:100%;height:auto;max-width:none;object-fit:contain}
+#startup-splash .startup-rule{width:34px;height:1px;background:#8a7549;margin:34px auto 23px;opacity:.7}
+#startup-splash .startup-motto{font-size:12px;font-weight:400;line-height:normal;letter-spacing:.24em;color:#9c8e70;margin:0}
+#startup-splash .startup-signature{position:absolute;bottom:max(7vh,30px);font-family:Arial,sans-serif;font-size:9px;font-weight:400;line-height:normal;letter-spacing:.3em;color:#6d6759;text-align:center}
+#startup-splash .startup-signature span{display:block;margin:13px auto 0;width:18px;height:1px;background:#766344}
+@media(min-width:900px){#startup-splash .startup-identity{width:450px}#startup-splash .startup-motto{font-size:13px}#startup-splash .startup-signature{bottom:8vh}}
