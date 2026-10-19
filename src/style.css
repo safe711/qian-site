@@ -438,3 +438,5 @@ html:has(body.startup-active),body.startup-active{overflow:hidden;overscroll-beh
 #startup-splash .startup-art-mark>img,#startup-splash .startup-art-motto>img{position:absolute;display:block;width:100%;height:auto;max-width:none;left:0;object-fit:initial}
 #startup-splash .startup-art-mark>img{top:-80%}
 #startup-splash .startup-art-motto>img{top:-1350%}
+
+.estate-map-arrow[data-estate-gallery]:disabled{opacity:.3;cursor:default}
