@@ -1,3 +1,4 @@
+import {QIAN_FINAL_OUTFIT_ASSETS} from './estate-qian-final-outfits.js';
 import {IMPORTED_ORIGINAL_ASSETS} from './estate-imported-originals.js';
 import {anchorBowKnees} from './estate-bow-anchors.js';
 import {EXPANSION_ORIGINAL_ASSETS} from './estate-expansion-originals.js';
@@ -10,8 +11,8 @@ import {isDisasterActor} from './estate-world.js';
 import {QIAN_OUTFIT_ORIGINAL_ASSETS} from './estate-qian-outfit-originals.js';
 import {QIAN_OWNER_ORIGINAL_ASSETS} from './estate-qian-owner-originals.js';
 export function usesQianOwnerDefault(a){return owner(a)&&a.gender!=='male'&&(!a.avatar?.outfit||['appearance-female-black','appearance-female-orange'].includes(a.avatar.outfit));}
-export function usesQianOwnerSprites(a){return usesQianOwnerDefault(a)||(owner(a)&&a.gender!=='male'&&['qian-outfit-gold','qian-outfit-black'].includes(a.avatar?.outfit));}
-const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS,...QIAN_OWNER_ORIGINAL_ASSETS,...QIAN_OUTFIT_ORIGINAL_ASSETS},BASE_ASSETS);
+export function usesQianOwnerSprites(a){return usesQianOwnerDefault(a)||(owner(a)&&a.gender!=='male'&&(['qian-outfit-gold','qian-outfit-black'].includes(a.avatar?.outfit)||!!QIAN_FINAL_OUTFIT_ASSETS[a.avatar?.outfit+'-idle']));}
+const ASSETS=anchorBowKnees({...BASE_ASSETS,...RIDING_ORIGINAL_ASSETS,...EXPANSION_ORIGINAL_ASSETS,...IMPORTED_ORIGINAL_ASSETS,...QIAN_OWNER_ORIGINAL_ASSETS,...QIAN_OUTFIT_ORIGINAL_ASSETS,...QIAN_FINAL_OUTFIT_ASSETS},BASE_ASSETS);
 const images={},frameClips=new WeakMap();
 const owner=a=>a.role==='owner'||a.id==='QIAN_OWNER_001';
 const moving=clip=>['walk','run','stop'].includes(clip);
@@ -61,7 +62,7 @@ export function drawCharacterFrame(c,a,clip='idle',k=0,{x=a.x,y=a.y,scale=1,flip
 }
 export function characterAnchor(a,clip,k,point='neck'){
  const selected=characterSelection(a,clip,k),asset=ASSETS[selected.id],frame=asset.frames[selected.index%asset.frames.length];
- return frame?.[point]||{x:33,y:29};
+ return frame?.[point]||(QIAN_FINAL_OUTFIT_ASSETS[selected.id]&&selected.id.endsWith('-walk')?({head:{x:33,y:9},neck:{x:33,y:17},hand:{x:40,y:35}}[point]||{x:33,y:29}):{x:33,y:29});
 }
 // Compatibility metadata, never a program-painted body.
 export const rasterDollFrame=characterFrame;
