@@ -39,7 +39,7 @@ export function makeGuardMotion(id,ownerId,targetId,leader,dog,destination,start
 export function makeRideMotion(id,ownerId,targetId,leader,dog,startedAt){const d=point(dog),near={...d,x:d.x-d.direction*12};return {id,ownerId,targetId,kind:'ride',scene:d.scene,startedAt,stages:[{duration:duration(leader,near),ownerFrom:point(leader),ownerTo:near,dogFrom:d,dogTo:d,phase:'pickup'},{duration:550,ownerFrom:near,ownerTo:d,dogFrom:d,dogTo:d,phase:'mount'}]};}
 
 export const BED_FOOTWEAR_POINT={x:450,y:297};
-export function estateShoeTarget(leader,site=null){const shoe=site==='bed'&&leader.scene==='bedroom'?{...BED_FOOTWEAR_POINT}:site==='desk'?{x:leader.x-24,y:leader.y-OWNER_CHAIR_RISE}:{x:leader.x,y:leader.y};return {shoe:{...shoe,scene:leader.scene,itemId:leader.avatar?.shoes||null},dog:{scene:leader.scene,x:shoe.x-27,y:shoe.y,direction:1}};}
+export function estateShoeTarget(leader,site=null){const shoe=site==='bed'&&leader.scene==='bedroom'?{...BED_FOOTWEAR_POINT}:site==='desk'?{x:leader.x-24,y:leader.y-OWNER_CHAIR_RISE}:{x:leader.x,y:leader.y};const seated=site==='desk'||site==='audience-sofa',dog=seated?{scene:leader.scene,x:Math.min(600,leader.x+(site==='desk'?22:65)),y:Math.min(330,leader.y+(site==='desk'?20:35)),direction:-1}:{scene:leader.scene,x:shoe.x-27,y:shoe.y,direction:1};return{shoe:{...shoe,scene:leader.scene,itemId:leader.avatar?.shoes||null},dog};}
 
 // A slack leash leaves the dog where it is, including when the owner turns.
 export function leashTrailPoint(trail,leader,dog){
