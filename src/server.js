@@ -1,4 +1,4 @@
-export const PUBLIC_SERVER="https://alike-friends-versus-dental.trycloudflare.com";
+export const PUBLIC_SERVER="https://armor-kingston-oecd-drawings.trycloudflare.com";
 export const HOME_SERVER=PUBLIC_SERVER;
 export const IPV6_SERVER=PUBLIC_SERVER;
 export const getServerOrigin=()=>PUBLIC_SERVER;
