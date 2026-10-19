@@ -3,7 +3,7 @@ import {drawCharacterFrame,paperDollReady,dollRig,dollWorldPoint,characterAnchor
 import {BED_FOOTWEAR_POINT,OWNER_CHAIR_RISE,OWNER_BED_RISE} from './estate-motion.js';
 import {ESTATE_CATALOG} from './model.js';
 import {loadOriginalImage} from './estate-original-image-cache.js';
-import {usesQianOwnerSprites} from './estate-original-character-renderer.js';
+import {usesQianOwnerSprites,characterFacing} from './estate-original-character-renderer.js';
 let removedBoots=null,bootsLoading=null,bootsRetryAt=0;
 function prepareRemovedBoots(){if(removedBoots||bootsLoading||Date.now()<bootsRetryAt)return bootsLoading;bootsLoading=loadOriginalImage(new URL('../assets/estate-expansion/owner-removed-boots-v1.png',import.meta.url).href).then(image=>{removedBoots=image;},()=>{bootsRetryAt=Date.now()+2000;}).finally(()=>{bootsLoading=null;});return bootsLoading;}
 export const estateSpritesReady=Promise.all([paperDollReady,prepareRemovedBoots()]);
@@ -20,6 +20,6 @@ export function drawBedFootwear(c,actor){const bed=ownerBedFootwear(actor);if(be
  c.restore();}
 
 
-export function ownerLeashPoint(a,t=0){const {clip,frame}=ownerDollPose(a,t);return dollWorldPoint(a,characterAnchor(a,clip,frame,'hand'),{...ownerOrigin(a,t),scale:1.2});}
+export function ownerLeashPoint(a,t=0){const {clip,frame}=ownerDollPose(a,t);const origin=ownerOrigin(a,t);return dollWorldPoint(a,characterAnchor(a,clip,frame,'hand'),{...origin,flip:origin.flip*characterFacing(a,clip,frame),scale:1.2});}
 
 

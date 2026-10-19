@@ -1,4 +1,4 @@
-export const PUBLIC_SERVER="https://subscribers-regardless-peripheral-wallpaper.trycloudflare.com";
+export const PUBLIC_SERVER="https://inspections-shannon-decrease-rapidly.trycloudflare.com";
 export const HOME_SERVER=PUBLIC_SERVER;
 export const IPV6_SERVER=PUBLIC_SERVER;
 export const getServerOrigin=()=>PUBLIC_SERVER;

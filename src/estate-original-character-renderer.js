@@ -60,8 +60,12 @@ export function drawCharacterFrame(c,a,clip='idle',k=0,{x=a.x,y=a.y,scale=1,flip
  if(!owner(a)){const item=ESTATE_CATALOG.find(i=>i.id===(a.avatar?.collar||'black-collar')&&i.kind==='collar'),p=frame.neck;if(item&&p&&!((clip==='carry'||selected.asset==='male-kneeling-offer'||selected.asset.startsWith('elder-')||clip==='basin')&&item.id==='black-collar')){c.save();c.translate(p.x-33,p.y-56);c.rotate(frame.neckAngle||0);drawWornOriginalCollar(c,item,0,0);c.restore();}}
  c.restore();return true;
 }
+// Hand contact points follow the source figure, independently of world pose/root offsets.
+const seatedHandFractions={lie:[.405,.9],sit:[.55,.68],recline:[.14,.84]};
+export function characterFacing(a,clip,k=0){return ASSETS[characterSelection(a,clip,k).id]?.facing||1;}
 export function characterAnchor(a,clip,k,point='neck'){
  const selected=characterSelection(a,clip,k),asset=ASSETS[selected.id],frame=asset.frames[selected.index%asset.frames.length];
+ if(point==='hand'&&owner(a)&&usesQianOwnerSprites(a)&&seatedHandFractions[clip]){const [u,v]=seatedHandFractions[clip],[sx,sy,w,h]=frame.sourceBounds,[dx,dy]=frame.offset;return{x:(sx+w*u)*frame.scale+dx,y:(sy+h*v)*frame.scale+dy};}
  return frame?.[point]||(QIAN_FINAL_OUTFIT_ASSETS[selected.id]&&selected.id.endsWith('-walk')?({head:{x:33,y:9},neck:{x:33,y:17},hand:{x:40,y:35}}[point]||{x:33,y:29}):{x:33,y:29});
 }
 // Compatibility metadata, never a program-painted body.
