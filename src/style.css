@@ -425,3 +425,7 @@ html:has(body.startup-active),body.startup-active{overflow:hidden;overscroll-beh
 @media(min-width:900px){#startup-splash .startup-identity{width:450px}#startup-splash .startup-motto{font-size:13px}#startup-splash .startup-signature{bottom:8vh}}
 
 .estate-goods-card.estate-outfit-card>img{display:block;width:100%;height:140px;max-width:100%;object-fit:contain;object-position:center bottom;image-rendering:auto;margin:0 0 4px}.estate-goods-card.estate-outfit-card>strong{margin-top:0}
+
+/* User-selected typography with original crowned-lion Q crest. */
+#startup-splash.startup-integrated{background:#0d0c0a}
+#startup-splash.startup-integrated>img{display:block;width:100%;height:100%;max-width:none;object-fit:contain;object-position:center;flex:none}

@@ -1,3 +1,4 @@
+import {estatePreloader,estatePreloadEnvironment} from './estate-preload.js';
 import {preloadOwnerPortrait} from './owner-portrait.js';
 import {growthKeepsView} from './growthview.js';
 import {estateHtml,mountEstate,estateKeepsView} from './estate.js';
@@ -42,6 +43,7 @@ import {buildShoeCard} from './shoecard.js';
 import {getShoePhoto} from './photos.js';
 import {familyPageHtml} from './family.js';
 const startupReady=showStartup();
+let estatePreloadEntered=false;function refreshEstatePreload(){if(!document.hidden)estatePreloader.update({entered:estatePreloadEntered,env:estatePreloadEnvironment()}).catch(()=>{});}refreshEstatePreload();setInterval(refreshEstatePreload,30000);document.addEventListener('visibilitychange',()=>{if(document.hidden)estatePreloader.stop();else refreshEstatePreload();});
 preloadOwnerPortrait().catch(()=>{});
 installDialogDismissal();
 captureDaysMatterShare();
@@ -67,7 +69,7 @@ let state;
 let storageFailed = false;
 try { state = readState(); } catch { state = initialState(); storageFailed = true; }
 const lanBackup=createLanBackup({photos:async()=>(await listPhotos()).filter(usedRitualPhoto),records:()=>state.shoeRecords,tasks:()=>state.tasks,notify,getAccountToken:()=>accountClient?.token});
-const accountClient=createAccountClient({getState:()=>state,onState:next=>{state=next;storageFailed=false;},onAuthenticated:()=>{setHidden(false);preloadOwnerPortrait(()=>lanBackup.readProfilePhoto()).catch(()=>{});},onConnection:paintConnection,onWelcome:profile=>{(async()=>{await startupReady;let portrait=null;if(isOwner(profile)){try{portrait=await preloadOwnerPortrait(()=>lanBackup.readProfilePhoto());}catch{if(accountClient.loggedIn&&accountClient.profile?.id===profile.id)notify('登录成功，主子头像暂未加载，已跳过欢迎框');return;}}if(!hidden&&accountClient.loggedIn&&accountClient.profile?.id===profile.id){notify('');showWelcome(profile,state.servantProfile,portrait?.url);}})();},onChanged:()=>{const logged=accountClient.loggedIn;if(logged&&!accountWasLoggedIn){archiveEditing=false;page=isOwner(accountClient.profile)?'家规':hasPendingDaysMatter()?'档案':'今日';roleController.reset();setTimeout(()=>roleController.refresh(),0);hidden=isAccountLocked();ritualKind=null;taskDetailId=null;shoeTaskId=null;shoeRecordId=null;reportOpen=false;}accountWasLoggedIn=logged;render();},notify});
+const accountClient=createAccountClient({getState:()=>state,onState:next=>{state=next;storageFailed=false;},onAuthenticated:()=>{setHidden(false);estatePreloadEntered=true;refreshEstatePreload();preloadOwnerPortrait(()=>lanBackup.readProfilePhoto()).catch(()=>{});},onConnection:paintConnection,onWelcome:profile=>{(async()=>{await startupReady;let portrait=null;if(isOwner(profile)){try{portrait=await preloadOwnerPortrait(()=>lanBackup.readProfilePhoto());}catch{if(accountClient.loggedIn&&accountClient.profile?.id===profile.id)notify('登录成功，主子头像暂未加载，已跳过欢迎框');return;}}if(!hidden&&accountClient.loggedIn&&accountClient.profile?.id===profile.id){notify('');showWelcome(profile,state.servantProfile,portrait?.url);}})();},onChanged:()=>{const logged=accountClient.loggedIn;estatePreloadEntered=logged;refreshEstatePreload();if(logged&&!accountWasLoggedIn){archiveEditing=false;page=isOwner(accountClient.profile)?'家规':hasPendingDaysMatter()?'档案':'今日';roleController.reset();setTimeout(()=>roleController.refresh(),0);hidden=isAccountLocked();ritualKind=null;taskDetailId=null;shoeTaskId=null;shoeRecordId=null;reportOpen=false;}accountWasLoggedIn=logged;render();},notify});
 let page = '今日';
 let unmountOwner=()=>{};
 

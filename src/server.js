@@ -1,4 +1,4 @@
-export const PUBLIC_SERVER="https://contacting-convicted-modular-stereo.trycloudflare.com";
+export const PUBLIC_SERVER="https://mailman-sells-outputs-bend.trycloudflare.com";
 export const HOME_SERVER=PUBLIC_SERVER;
 export const IPV6_SERVER=PUBLIC_SERVER;
 export const getServerOrigin=()=>PUBLIC_SERVER;
